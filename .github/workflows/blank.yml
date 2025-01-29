@@ -1,0 +1,60 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+env:
+  BUN_VERSION: ${{ github.event.inputs.tag || github.event.release.tag_name || 'canary' }}
+  BUN_LATEST: ${{ 'true' }}
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs: 
+      tag:
+        type: string
+        description: What is the release tag? (e.g. "1.0.2", "canary")
+        required: true
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    if: ${{ env.BUN_LATEST == 'true' && BUN_VERSION != "canary}}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+        with:
+          repository: RiskyMH/DefinitelyTyped
+          token: ${{ secrets.ROBOBUN_TOKEN }}
+
+      - uses: 'user/sync-fork-action@v1.0'  
+        with:
+          # upstream_repo: 'nektro/DefinitelyTyped'
+          upstream_repo: 'The-Fiery-Fire/DefinitelyTyped-bun'
+          branch: 'main'
+          token: ${{ secrets.ROBOBUN_TOKEN }}
+
+      - name: script
+        run: | 
+          bun run -e '
+          const file = Bun.file("./bun/package.json");
+          const json = await file.json()
+          const version = process.env.BUN_VERSION;
+          json.dependencies["bun-types"] = version;
+          json.version = version.slice(0, version.lastIndexOf(".")) + ".9999";
+          await file.write(JSON.stringify(a, null, 4));
+          '
+       
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.ROBOBUN_TOKEN }}
+          add-paths: ./bun/package.json
+          commit-message: "Update `bun-types` version to ${{env.BUN_VERSION}}"
+          base: The-Fiery-Fire/DefinitelyTyped-bun
+          push-to-fork: RiskyMH/DefinitelyTyped
+          body: "test, pls ignore"
+          title: "[bun] update to ${{env.BUN_VERSION}}"
