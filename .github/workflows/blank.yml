@@ -42,7 +42,7 @@ jobs:
 
       - name: script
         run: | 
-          bun -e 'const file = Bun.file("./bun/package.json"); const json = await file.json(); const version = process.env.BUN_VERSION; json.dependencies["bun-types"] = version; json.version = version.slice(0, version.lastIndexOf(".")) + ".9999"; await file.write(JSON.stringify(a, null, 4));'       
+          bun -e 'const file = Bun.file("./types/bun/package.json"); const json = await file.json(); const version = process.env.BUN_VERSION; json.dependencies["bun-types"] = version; json.version = version.slice(0, version.lastIndexOf(".")) + ".9999"; await file.write(JSON.stringify(a, null, 4));'       
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
