@@ -47,7 +47,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.ROBOBUN_TOKEN }}
-          add-paths: ./bun/package.json
+          add-paths: ./types/bun/package.json
           commit-message: "Update `bun-types` version to ${{env.BUN_VERSION}}"
           push-to-fork: RiskyMH/DefinitelyTyped
           body: "test, pls ignore"
