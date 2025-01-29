@@ -35,9 +35,7 @@ jobs:
       #     upstream_repo: 'The-Fiery-Fire/DefinitelyTyped-bun'
       #     branch: 'main'
       #     token: ${{ secrets.ROBOBUN_TOKEN }}
-      - run: gh repo sync The-Fiery-Fire/DefinitelyTyped-bun -b master
-        env:
-          GITHUB_TOKEN: ${{ secrets.ROBOBUN_TOKEN }}
+      - run: git fetch upstream && git merge upstream/main
 
       - name: script
         run: | 
