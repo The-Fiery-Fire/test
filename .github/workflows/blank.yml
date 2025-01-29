@@ -15,6 +15,7 @@ on:
         type: string
         description: What is the release tag? (e.g. "1.0.2", "canary")
         required: true
+        default: 1.2.3
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -26,8 +27,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
         with:
-          repository: RiskyMH/DefinitelyTyped
+          repository: nektro/DefinitelyTyped
           token: ${{ secrets.ROBOBUN_TOKEN }}
+          
       - uses: oven-sh/setup-bun@v2
       # - uses: 'user/sync-fork-action@v1.0'  
       #   with:
@@ -35,8 +37,8 @@ jobs:
       #     upstream_repo: 'The-Fiery-Fire/DefinitelyTyped-bun'
       #     branch: 'main'
       #     token: ${{ secrets.ROBOBUN_TOKEN }}
-      - name: sync 
-        run: git remote add upstream https://github.com/nektro/DefinitelyTyped.git && git fetch upstream master && git merge upstream/master
+      # - name: sync 
+      #   run: git remote add upstream https://github.com/nektro/DefinitelyTyped.git && git fetch upstream master && git merge upstream/master
 
       - name: script
         run: | 
