@@ -58,5 +58,6 @@ jobs:
           base: The-Fiery-Fire/DefinitelyTyped-bun
           push-to-fork: RiskyMH/DefinitelyTyped
           body: "test, pls ignore"
+          branch: "bun-${{env.BUN_VERSION}}"
           title: "[bun] update to ${{env.BUN_VERSION}}"
         if: ${{ env.BUN_LATEST == 'true' && env.BUN_VERSION != 'canary'}}
