@@ -55,7 +55,7 @@ jobs:
           token: ${{ secrets.ROBOBUN_TOKEN }}
           add-paths: ./bun/package.json
           commit-message: "Update `bun-types` version to ${{env.BUN_VERSION}}"
-          base: The-Fiery-Fire/DefinitelyTyped-bun
+          base: nektro/DefinitelyTyped
           push-to-fork: RiskyMH/DefinitelyTyped
           body: "test, pls ignore"
           branch: "bun-${{env.BUN_VERSION}}"
