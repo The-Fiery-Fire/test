@@ -21,7 +21,6 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    if: ${{ env.BUN_LATEST == 'true' && env.BUN_VERSION != 'canary'}}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -58,3 +57,4 @@ jobs:
           push-to-fork: RiskyMH/DefinitelyTyped
           body: "test, pls ignore"
           title: "[bun] update to ${{env.BUN_VERSION}}"
+        if: ${{ env.BUN_LATEST == 'true' && env.BUN_VERSION != 'canary'}}
