@@ -35,7 +35,8 @@ jobs:
       #     upstream_repo: 'The-Fiery-Fire/DefinitelyTyped-bun'
       #     branch: 'main'
       #     token: ${{ secrets.ROBOBUN_TOKEN }}
-      - run: git remote add upstream https://github.com/nektro/DefinitelyTyped.git && git fetch upstream && git merge upstream/master
+      - name: sync 
+        run: git remote add upstream https://github.com/nektro/DefinitelyTyped.git && git fetch upstream master && git merge upstream/master
 
       - name: script
         run: | 
