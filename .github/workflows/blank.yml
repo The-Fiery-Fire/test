@@ -28,7 +28,7 @@ jobs:
         with:
           repository: RiskyMH/DefinitelyTyped
           token: ${{ secrets.ROBOBUN_TOKEN }}
-
+      - uses: oven-sh/setup-bun@v2
       # - uses: 'user/sync-fork-action@v1.0'  
       #   with:
       #     # upstream_repo: 'nektro/DefinitelyTyped'
