@@ -50,6 +50,7 @@ jobs:
           json.version = version.slice(0, version.lastIndexOf(".")) + ".9999"; 
           await file.write(JSON.stringify(json, null, 4)+"\n");
           '       
+      - run: git diff
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
