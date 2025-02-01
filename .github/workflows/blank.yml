@@ -15,7 +15,7 @@ on:
         type: string
         description: What is the release tag? (e.g. "1.0.2", "canary")
         required: true
-        default: 1.2.3
+        default: bun-v1.2.3
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -27,7 +27,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
         with:
-          repository: DefinitelyTyped/DefinitelyTyped
+          repository: nektro/DefinitelyTyped
           token: ${{ secrets.ROBOBUN_TOKEN }}
           
       - uses: oven-sh/setup-bun@v2
@@ -39,13 +39,16 @@ jobs:
       #     token: ${{ secrets.ROBOBUN_TOKEN }}
       # - name: sync 
       #   run: git remote add upstream https://github.com/nektro/DefinitelyTyped.git && git fetch upstream master && git merge upstream/master
+     
+      - id: bun-version
+        run: echo "BUN_VERSION=${BUN_VERSION#bun-v}" >> "$GITHUB_OUTPUT"
 
       - name: script
         run: | 
           bun -e '
           const file = Bun.file("./types/bun/package.json"); 
           const json = await file.json(); 
-          const version = process.env.BUN_VERSION; 
+          const version = ${{steps.bun-version.outputs.BUN_VERSION}}; 
           json.dependencies["bun-types"] = version; 
           json.version = version.slice(0, version.lastIndexOf(".")) + ".9999"; 
           await file.write(JSON.stringify(json, null, 4)+"\n");
@@ -58,11 +61,11 @@ jobs:
         with:
           token: ${{ secrets.ROBOBUN_TOKEN }}
           add-paths: ./types/bun/package.json
-          title: "[bun] update to ${{env.BUN_VERSION}}"
-          commit-message: "[bun] update to ${{env.BUN_VERSION}}"
+          title: "[bun] update to ${{steps.bun-version.outputs.BUN_VERSION}}"
+          commit-message: "[bun] update to ${{steps.bun-version.outputs.BUN_VERSION}}"
           body: |
-            Update `bun-types` version to ${{env.BUN_VERSION}}
+            Update `bun-types` version to ${{steps.bun-version.outputs.BUN_VERSION}}
 
-            https://bun.sh/blog/bun-v${{env.BUN_VERSION}}
-          push-to-fork: oven-sh/DefinitelyTyped
-          branch: "bun-${{env.BUN_VERSION}}"
+            https://bun.sh/blog/${{env.BUN_VERSION}}
+          push-to-fork: RiskyMH/DefinitelyTyped
+          branch: "${{env.BUN_VERSION}}"
