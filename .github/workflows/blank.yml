@@ -67,5 +67,5 @@ jobs:
             Update `bun-types` version to ${{steps.bun-version.outputs.BUN_VERSION}}
 
             https://bun.sh/blog/${{env.BUN_VERSION}}
-          push-to-fork: RiskyMH/DefinitelyTyped
+          push-to-fork: oven-sh/DefinitelyTyped
           branch: "${{env.BUN_VERSION}}"
