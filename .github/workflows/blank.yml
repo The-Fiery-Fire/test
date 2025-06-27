@@ -33,11 +33,11 @@ jobs:
            BUN_NPM_TOKEN: "b"
 
 
-      - run: bun i @riskymh/aws --verbose"
+      - run: bun i @riskymh/aws --verbose || true
         env:
            NPM_CONFIG_TOKEN: "a"
 
-      - run: bun i @riskymh/aws --verbose
+      - run: bun i @riskymh/aws --verbose || true
         env:
            BUN_NPM_TOKEN: "b"
 
