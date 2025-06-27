@@ -2,20 +2,10 @@
 
 name: CI
 
-env:
-  BUN_VERSION: ${{ github.event.inputs.tag || github.event.release.tag_name || 'canary' }}
-  BUN_LATEST: ${{ 'true' }}
-
 # Controls when the workflow will run
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    inputs: 
-      tag:
-        type: string
-        description: What is the release tag? (e.g. "1.2.3", "canary")
-        required: true
-        default: bun-v1.2.3
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -25,47 +15,30 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-        with:
-          repository: DefinitelyTyped/DefinitelyTyped
-          token: ${{ secrets.ROBOBUN_TOKEN }}
           
       - uses: oven-sh/setup-bun@v2
-      # - uses: 'user/sync-fork-action@v1.0'  
-      #   with:
-      #     # upstream_repo: 'nektro/DefinitelyTyped'
-      #     upstream_repo: 'The-Fiery-Fire/DefinitelyTyped-bun'
-      #     branch: 'main'
-      #     token: ${{ secrets.ROBOBUN_TOKEN }}
-      # - name: sync 
-      #   run: git remote add upstream https://github.com/nektro/DefinitelyTyped.git && git fetch upstream master && git merge upstream/master
-     
-      - id: bun-version
-        run: echo "BUN_VERSION=${BUN_VERSION#bun-v}" >> "$GITHUB_OUTPUT"
-
-      - name: script
-        run: | 
-          bun -e '
-          const file = Bun.file("./types/bun/package.json"); 
-          const json = await file.json(); 
-          const version = "${{steps.bun-version.outputs.BUN_VERSION}}"; 
-          json.dependencies["bun-types"] = version; 
-          json.version = version.slice(0, version.lastIndexOf(".")) + ".9999"; 
-          await file.write(JSON.stringify(json, null, 4)+"\n");
-          '       
-      - run: git diff
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        if: ${{ env.BUN_LATEST == 'true' && env.BUN_VERSION != 'canary'}}
         with:
-          token: ${{ secrets.ROBOBUN_TOKEN }}
-          add-paths: ./types/bun/package.json
-          title: "[bun] update to ${{steps.bun-version.outputs.BUN_VERSION}}"
-          commit-message: "[bun] update to ${{steps.bun-version.outputs.BUN_VERSION}}"
-          body: |
-            Update `bun-types` version to ${{steps.bun-version.outputs.BUN_VERSION}}
+          scope: "@riskymh"
+          registry-url: "https://registry.npmjs.org"
+      
+      - id: bun-version
+        run: echo "BUN_NPM_TOKEN=${BUN_NPM_TOKEN:${NPM_CONFIG_TOKEN}}" >> "$GITHUB_ENV"
 
-            https://bun.sh/blog/${{env.BUN_VERSION}}
-          push-to-fork: oven-sh/DefinitelyTyped
-          branch: "${{env.BUN_VERSION}}"
+      - run: bun --print "[process.env.BUN_NPM_TOKEN, process.env.NPM_CONFIG_TOKEN]"
+        env:
+           NPM_CONFIG_TOKEN: "a"
+
+      - run: bun --print "[process.env.BUN_NPM_TOKEN, process.env.NPM_CONFIG_TOKEN]"
+        env:
+           BUN_NPM_TOKEN: "b"
+
+
+      - run: bun i @riskymh/aws --verbose"
+        env:
+           NPM_CONFIG_TOKEN: "a"
+
+      - run: bun i @riskymh/aws --verbose
+        env:
+           BUN_NPM_TOKEN: "b"
+
+
